@@ -1,8 +1,8 @@
-import axios from 'axios'
-import ip from 'ip'
-import { Request } from '@loopback/rest';
+import {Request} from '@loopback/rest';
+import axios from 'axios';
+import ip from 'ip';
+import {ElogOptions, Logger, LogMetadata, TokenRepository} from '../types';
 
-import { ElogOptions, Logger, LogMetadata, TokenRepository } from '../types'
 
 type Infomation = {
   key: string,
@@ -75,7 +75,7 @@ export class ElogService implements Logger {
     try {
       const res = await axios.post(`${this.url}/applications/login`, data)
       this.token = res.data.token
-      const token = await this.tokenRepo.findOne({ where: { username: this.username } })
+      const token = await this.tokenRepo.findOne({where: {username: this.username}})
       if (token) {
         token.token = this.token
         this.tokenRepo.save(token)
@@ -91,7 +91,10 @@ export class ElogService implements Logger {
   }
 
   async log(metaData: LogMetadata, request: Request, reqData: any, result: any, status: boolean) {
-    const { parseInfo, parseResult, fn, priorityLevel, description } = metaData
+    if (status === false) {
+      this.setStatus(status)
+    }
+    const {parseInfo, parseResult, fn, priorityLevel, description} = metaData
     if (description) {
       this.setDescription(`${description} ${this.description}`)
     }
@@ -107,11 +110,13 @@ export class ElogService implements Logger {
       }
     }
     if (parseResult) {
-      const { status, resultCode } = parseResult(result)
+      const {status: resutlStatus, resultCode} = parseResult(result)
       this.setResultCode(resultCode)
       if (this.status === null) {
-        this.setStatus(status)
+        this.setStatus(resutlStatus)
       }
+    } else {
+      this.setStatus(status)
     }
     if (priorityLevel) {
       this.setType(priorityLevel)
@@ -179,7 +184,7 @@ export class ElogService implements Logger {
   }
 
   addObjectInfo(key: string, value: string) {
-    this.informations = [...this.informations, { key, value }]
+    this.informations = [...this.informations, {key, value}]
     this.setChange();
   }
 
@@ -207,7 +212,7 @@ export class ElogService implements Logger {
     try {
       await this.getToken()
       if (this.token) {
-        const res = await axios.post(`${this.url}${apiName}`, data, { headers: { Authorization: `Bearer ${this.token}` } })
+        const res = await axios.post(`${this.url}${apiName}`, data, {headers: {Authorization: `Bearer ${this.token}`}})
         return res.data
       }
       return false;
@@ -228,7 +233,7 @@ export class ElogService implements Logger {
     try {
       await this.getToken()
       if (this.token) {
-        const res = await axios.patch(`${this.url}${apiName}`, data, { headers: { Authorization: `Bearer ${this.token}` } })
+        const res = await axios.patch(`${this.url}${apiName}`, data, {headers: {Authorization: `Bearer ${this.token}`}})
         return res.data
       }
       return false;
@@ -341,11 +346,11 @@ export class ElogService implements Logger {
 
   async getToken() {
     if (!this.token) {
-      let token = await this.tokenRepo.findOne({ where: { username: this.username } })
+      let token = await this.tokenRepo.findOne({where: {username: this.username}})
       let tokenKey: string = token ? token.token || '' : ''
       if (!tokenKey) {
         await this.login()
-        let token = await this.tokenRepo.findOne({ where: { username: this.username } })
+        let token = await this.tokenRepo.findOne({where: {username: this.username}})
         if (!token) {
           return false
         }
@@ -360,7 +365,7 @@ export class ElogService implements Logger {
   }
 
   async clearToken() {
-    await this.tokenRepo.deleteAll({ username: this.username })
+    await this.tokenRepo.deleteAll({username: this.username})
     this.token = ''
   }
 }
