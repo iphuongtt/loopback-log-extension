@@ -173,11 +173,9 @@ class ElogService {
         catch (error) {
             if (error.response.status === 401) {
                 await this.clearToken();
-                this.post(data, apiName);
+                return this.post(data, apiName);
             }
-            else {
-                return false;
-            }
+            return false;
         }
     }
     /**
@@ -197,11 +195,9 @@ class ElogService {
         catch (error) {
             if (error.response.status === 401) {
                 await this.clearToken();
-                this.patch(data, apiName);
+                return this.patch(data, apiName);
             }
-            else {
-                return false;
-            }
+            return false;
         }
     }
     createLogDataRequest() {

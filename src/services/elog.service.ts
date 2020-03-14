@@ -211,7 +211,7 @@ export class ElogService implements Logger {
     this.timelines = [...this.timelines, timeLineData]
   }
 
-  async post(data: object, apiName: string) {
+  async post(data: object, apiName: string): Promise<any> {
     try {
       await this.getToken()
       if (this.token) {
@@ -223,17 +223,16 @@ export class ElogService implements Logger {
     } catch (error) {
       if (error.response.status === 401) {
         await this.clearToken();
-        this.post(data, apiName);
-      } else {
-        return false;
+        return this.post(data, apiName);
       }
+      return false;
     }
   }
 
   /**
      * Create patch request
      */
-  async patch(data: object, apiName: string) {
+  async patch(data: object, apiName: string): Promise<any> {
     try {
       await this.getToken()
       if (this.token) {
@@ -245,10 +244,9 @@ export class ElogService implements Logger {
     } catch (error) {
       if (error.response.status === 401) {
         await this.clearToken();
-        this.patch(data, apiName);
-      } else {
-        return false;
+        return this.patch(data, apiName);
       }
+      return false;
     }
   }
 
