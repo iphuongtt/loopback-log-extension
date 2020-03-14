@@ -258,7 +258,7 @@ export class ElogService implements Logger {
     if (this.description) {
       data.description = this.description
     }
-    if (this.status) {
+    if (this.status !== null) {
       data.status = this.status
     }
     if (this.resultCode) {

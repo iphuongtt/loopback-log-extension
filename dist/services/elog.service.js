@@ -52,6 +52,9 @@ class ElogService {
         }
     }
     async log(metaData, request, reqData, result, status) {
+        if (status === false) {
+            this.setStatus(status);
+        }
         const { parseInfo, parseResult, fn, priorityLevel, description } = metaData;
         if (description) {
             this.setDescription(`${description} ${this.description}`);
@@ -68,11 +71,14 @@ class ElogService {
             }
         }
         if (parseResult) {
-            const { status, resultCode } = parseResult(result);
+            const { status: resutlStatus, resultCode } = parseResult(result);
             this.setResultCode(resultCode);
             if (this.status === null) {
-                this.setStatus(status);
+                this.setStatus(resutlStatus);
             }
+        }
+        else {
+            this.setStatus(status);
         }
         if (priorityLevel) {
             this.setType(priorityLevel);
@@ -152,7 +158,6 @@ class ElogService {
         this.timelines = [...this.timelines, timeLineData];
     }
     async post(data, apiName) {
-        console.log(data);
         try {
             await this.getToken();
             if (this.token) {
@@ -162,7 +167,6 @@ class ElogService {
             return false;
         }
         catch (error) {
-            console.log(error.response.data.error.details);
             if (error.response.status === 401) {
                 await this.clearToken();
                 this.post(data, apiName);
@@ -229,7 +233,6 @@ class ElogService {
         if (this.functionCode) {
             const data = this.createLogDataRequest();
             const result = await this.post(data, '/diaries');
-            console.log(result);
             if (result) {
                 this.logId = result.id;
                 this.pushTimeLine();
