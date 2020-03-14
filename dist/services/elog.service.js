@@ -80,8 +80,8 @@ class ElogService {
         this.setResultCode(resultCode);
         if (this.status === null) {
             this.setStatus(resutlStatus);
+            this.addTimeLine('result', resutlStatus, 'result.json', Buffer.from(JSON.stringify(resResult), 'utf8').toString('base64'));
         }
-        this.addTimeLine('result', resutlStatus, 'result.json', Buffer.from(JSON.stringify(resResult), 'utf8').toString('base64'));
         if (priorityLevel) {
             this.setType(priorityLevel);
         }
