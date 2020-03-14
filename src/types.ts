@@ -30,7 +30,8 @@ export type LogMetadata = {
   parseInfo?: Function,
   parseResult: (result: any) => {
     status: boolean,
-    resultCode: string
+    resultCode: string,
+    result: object
   },
   priorityLevel?: string,
   description: string

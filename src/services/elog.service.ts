@@ -93,6 +93,11 @@ export class ElogService implements Logger {
   async log(metaData: LogMetadata, request: Request, reqData: any, result: any, status: boolean) {
     if (status === false) {
       this.setStatus(status)
+      if (typeof result === 'object') {
+        this.addTimeLine('result', false, 'result.json', Buffer.from(JSON.stringify(result), 'utf8').toString('base64'))
+      } else {
+        this.addTimeLine('result', false, 'result.txt', Buffer.from(result, 'utf8').toString('base64'))
+      }
     }
     const {parseInfo, parseResult, fn, priorityLevel, description} = metaData
     if (description) {
@@ -109,15 +114,14 @@ export class ElogService implements Logger {
         })
       }
     }
-    if (parseResult) {
-      const {status: resutlStatus, resultCode} = parseResult(result)
-      this.setResultCode(resultCode)
-      if (this.status === null) {
-        this.setStatus(resutlStatus)
-      }
-    } else {
-      this.setStatus(status)
+
+    const {status: resutlStatus, resultCode, result: resResult} = parseResult(result);
+    this.setResultCode(resultCode);
+    if (this.status === null) {
+      this.setStatus(resutlStatus);
     }
+    this.addTimeLine('result', resutlStatus, 'result.json', Buffer.from(JSON.stringify(resResult), 'utf8').toString('base64'))
+
     if (priorityLevel) {
       this.setType(priorityLevel)
     }
@@ -213,14 +217,16 @@ export class ElogService implements Logger {
       if (this.token) {
         const res = await axios.post(`${this.url}${apiName}`, data, {headers: {Authorization: `Bearer ${this.token}`}})
         return res.data
+      } else {
+        return false;
       }
-      return false;
     } catch (error) {
       if (error.response.status === 401) {
         await this.clearToken();
         this.post(data, apiName);
+      } else {
+        return false;
       }
-      return false;
     }
   }
 
@@ -233,14 +239,16 @@ export class ElogService implements Logger {
       if (this.token) {
         const res = await axios.patch(`${this.url}${apiName}`, data, {headers: {Authorization: `Bearer ${this.token}`}})
         return res.data
+      } else {
+        return false;
       }
-      return false;
     } catch (error) {
       if (error.response.status === 401) {
         await this.clearToken();
         this.patch(data, apiName);
+      } else {
+        return false;
       }
-      return false;
     }
   }
 
@@ -301,8 +309,8 @@ export class ElogService implements Logger {
           if (this.timelines[i].content) {
             timeLineData.content = this.timelines[i].content
           }
-          if (this.timelines[i].status) {
-            timeLineData.status = this.timelines[i].status
+          if (this.timelines[i].status !== null) {
+            timeLineData.status = this.timelines[i].status;
           }
           if (this.timelines[i].file) {
             timeLineData.file = this.timelines[i].file
