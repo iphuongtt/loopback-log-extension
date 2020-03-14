@@ -22,6 +22,7 @@ export declare type LogMetadata = {
     parseResult: (result: any) => {
         status: boolean;
         resultCode: string;
+        result: object;
     };
     priorityLevel?: string;
     description: string;

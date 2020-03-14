@@ -54,6 +54,12 @@ class ElogService {
     async log(metaData, request, reqData, result, status) {
         if (status === false) {
             this.setStatus(status);
+            if (typeof result === 'object') {
+                this.addTimeLine('result', false, 'result.json', Buffer.from(JSON.stringify(result), 'utf8').toString('base64'));
+            }
+            else {
+                this.addTimeLine('result', false, 'result.txt', Buffer.from(result, 'utf8').toString('base64'));
+            }
         }
         const { parseInfo, parseResult, fn, priorityLevel, description } = metaData;
         if (description) {
@@ -70,16 +76,12 @@ class ElogService {
                 });
             }
         }
-        if (parseResult) {
-            const { status: resutlStatus, resultCode } = parseResult(result);
-            this.setResultCode(resultCode);
-            if (this.status === null) {
-                this.setStatus(resutlStatus);
-            }
+        const { status: resutlStatus, resultCode, result: resResult } = parseResult(result);
+        this.setResultCode(resultCode);
+        if (this.status === null) {
+            this.setStatus(resutlStatus);
         }
-        else {
-            this.setStatus(status);
-        }
+        this.addTimeLine('result', resutlStatus, 'result.json', Buffer.from(JSON.stringify(resResult), 'utf8').toString('base64'));
         if (priorityLevel) {
             this.setType(priorityLevel);
         }
@@ -164,14 +166,18 @@ class ElogService {
                 const res = await axios_1.default.post(`${this.url}${apiName}`, data, { headers: { Authorization: `Bearer ${this.token}` } });
                 return res.data;
             }
-            return false;
+            else {
+                return false;
+            }
         }
         catch (error) {
             if (error.response.status === 401) {
                 await this.clearToken();
                 this.post(data, apiName);
             }
-            return false;
+            else {
+                return false;
+            }
         }
     }
     /**
@@ -184,14 +190,18 @@ class ElogService {
                 const res = await axios_1.default.patch(`${this.url}${apiName}`, data, { headers: { Authorization: `Bearer ${this.token}` } });
                 return res.data;
             }
-            return false;
+            else {
+                return false;
+            }
         }
         catch (error) {
             if (error.response.status === 401) {
                 await this.clearToken();
                 this.patch(data, apiName);
             }
-            return false;
+            else {
+                return false;
+            }
         }
     }
     createLogDataRequest() {
@@ -208,7 +218,7 @@ class ElogService {
         if (this.description) {
             data.description = this.description;
         }
-        if (this.status) {
+        if (this.status !== null) {
             data.status = this.status;
         }
         if (this.resultCode) {
@@ -249,7 +259,7 @@ class ElogService {
                     if (this.timelines[i].content) {
                         timeLineData.content = this.timelines[i].content;
                     }
-                    if (this.timelines[i].status) {
+                    if (this.timelines[i].status !== null) {
                         timeLineData.status = this.timelines[i].status;
                     }
                     if (this.timelines[i].file) {

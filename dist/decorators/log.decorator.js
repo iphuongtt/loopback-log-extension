@@ -24,7 +24,7 @@ exports.log = log;
  */
 function getLogMetadata(controllerClass, methodName) {
     var _a;
-    return ((_a = context_1.MetadataInspector.getMethodMetadata(keys_1.LOG_METADATA_KEY, controllerClass.prototype, methodName)) !== null && _a !== void 0 ? _a : { fn: { code: '', name: '' }, description: '', parseInfo: () => { }, parseResult: () => { return { status: true, resultCode: '' }; } });
+    return ((_a = context_1.MetadataInspector.getMethodMetadata(keys_1.LOG_METADATA_KEY, controllerClass.prototype, methodName)) !== null && _a !== void 0 ? _a : { fn: { code: '', name: '' }, description: '', parseInfo: () => { }, parseResult: () => { return { status: true, resultCode: '', result: {} }; } });
 }
 exports.getLogMetadata = getLogMetadata;
 //# sourceMappingURL=log.decorator.js.map
