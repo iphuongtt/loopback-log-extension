@@ -208,7 +208,6 @@ export class ElogService implements Logger {
   }
 
   async post(data: object, apiName: string) {
-    console.log(data)
     try {
       await this.getToken()
       if (this.token) {
@@ -217,7 +216,6 @@ export class ElogService implements Logger {
       }
       return false;
     } catch (error) {
-      console.log(error.response.data.error.details)
       if (error.response.status === 401) {
         await this.clearToken();
         this.post(data, apiName);
@@ -286,7 +284,6 @@ export class ElogService implements Logger {
     if (this.functionCode) {
       const data = this.createLogDataRequest()
       const result = await this.post(data, '/diaries')
-      console.log(result)
       if (result) {
         this.logId = result.id
         this.pushTimeLine()
