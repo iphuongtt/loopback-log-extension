@@ -109,7 +109,7 @@ export class ElogService implements Logger {
         const keyInfos = Object.keys(infos)
         keyInfos.forEach(key => {
           if (infos[key]) {
-            this.addObjectInfo(key, infos[key])
+            this.addObjectInfo(key, infos[key].toString())
           }
         })
       }
@@ -305,7 +305,7 @@ export class ElogService implements Logger {
       for (let i = 0; i < this.timelines.length; i++) {
         if (!this.timelines[i].isSend) {
           if (this.timelines[i].content) {
-            timeLineData.content = this.timelines[i].content
+            timeLineData.content = this.timelines[i].content?.toString()
           }
           if (this.timelines[i].status !== null) {
             timeLineData.status = this.timelines[i].status;

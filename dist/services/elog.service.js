@@ -71,7 +71,7 @@ class ElogService {
                 const keyInfos = Object.keys(infos);
                 keyInfos.forEach(key => {
                     if (infos[key]) {
-                        this.addObjectInfo(key, infos[key]);
+                        this.addObjectInfo(key, infos[key].toString());
                     }
                 });
             }
@@ -248,12 +248,13 @@ class ElogService {
         return false;
     }
     async pushTimeLine() {
+        var _a;
         let timeLineData = {};
         if (this.logId && this.timelines && this.timelines.length > 0) {
             for (let i = 0; i < this.timelines.length; i++) {
                 if (!this.timelines[i].isSend) {
                     if (this.timelines[i].content) {
-                        timeLineData.content = this.timelines[i].content;
+                        timeLineData.content = (_a = this.timelines[i].content) === null || _a === void 0 ? void 0 : _a.toString();
                     }
                     if (this.timelines[i].status !== null) {
                         timeLineData.status = this.timelines[i].status;
