@@ -79,7 +79,12 @@ class ElogService {
         const { status: resutlStatus, resultCode, result: resResult } = parseResult(result);
         this.setResultCode(resultCode);
         if (this.status === null) {
-            this.setStatus(resutlStatus);
+            if (resutlStatus !== undefined) {
+                this.setStatus(resutlStatus);
+            }
+            else {
+                this.setStatus(status);
+            }
             this.addTimeLine('result', resutlStatus, 'result.json', Buffer.from(JSON.stringify(resResult), 'utf8').toString('base64'));
         }
         if (priorityLevel) {
