@@ -27,8 +27,8 @@ export type LogMetadata = {
     name: string
   },
   level?: number,
-  parseInfo?: <T>(request: T) => {[key: string]: string},
-  parseResult: <T>(result: T) => {
+  parseInfo?: (request: any) => {[key: string]: string},
+  parseResult: (result: any) => {
     status: boolean,
     resultCode: string,
     result: {[key: string]: string}
@@ -72,5 +72,5 @@ export type Diary = {
 export type TimerFn = (start?: HighResTime) => HighResTime;
 
 export type RequestBodyWithElog = Partial<RequestBodyObject> & {
-  parseInfo: <T>(reqData: T) => {[key: string]: string}
+  parseInfo: (reqData: any) => {[key: string]: string}
 }
