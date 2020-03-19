@@ -54,7 +54,7 @@ export declare class ElogService implements Logger {
     private timeLineOrder;
     constructor(options: ElogOptions, tokenRepo: TokenRepository);
     login(): Promise<false | undefined>;
-    log(metaData: LogMetadata<object, object>, request: Request, reqData: any, result: any, status: boolean): Promise<void>;
+    log(metaData: LogMetadata, request: Request, reqData: any, result: any, status: boolean): Promise<void>;
     setChange(change?: boolean): void;
     setDone(): void;
     setFunction(functionCode: string, functionName: string): void;

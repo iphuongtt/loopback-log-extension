@@ -50,7 +50,7 @@ export class LogActionProvider implements Provider<LogFn> {
     const controllerClass = await this.getController();
     const methodName: string = await this.getMethod();
 
-    const metadata: LogMetadata<object, object> = getLogMetadata(controllerClass, methodName);
+    const metadata: LogMetadata = getLogMetadata(controllerClass, methodName);
 
     const level: number | undefined = metadata ? metadata.level : undefined;
 

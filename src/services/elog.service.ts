@@ -90,7 +90,7 @@ export class ElogService implements Logger {
     }
   }
 
-  async log(metaData: LogMetadata<object, object>, request: Request, reqData: any, result: any, status: boolean) {
+  async log(metaData: LogMetadata, request: Request, reqData: any, result: any, status: boolean) {
     if (status === false) {
       this.setStatus(status)
       if (typeof result === 'object') {

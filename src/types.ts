@@ -21,14 +21,14 @@ export interface LogFn {
 /**
  * Log level metadata
  */
-export type LogMetadata<RQ, RP> = {
+export type LogMetadata = {
   fn: {
     code: string,
     name: string
   },
   level?: number,
-  parseInfo?: (request: RQ) => {[key: string]: string},
-  parseResult: (result: RP) => {
+  parseInfo?: <T>(request: T) => {[key: string]: string},
+  parseResult: <T>(result: T) => {
     status: boolean,
     resultCode: string,
     result: {[key: string]: string}
@@ -47,7 +47,7 @@ export type HighResTime = [number, number]; // [seconds, nanoseconds]
  * Log writing function
  */
 export interface Logger {
-  log(logMetaData: LogMetadata<object, object>, req: Request, reqData: any, result: any, status: boolean): void
+  log(logMetaData: LogMetadata, req: Request, reqData: any, result: any, status: boolean): void
 }
 
 export type TokenRepository = DefaultCrudRepository<Token,
