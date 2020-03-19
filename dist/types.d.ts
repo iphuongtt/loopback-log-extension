@@ -57,8 +57,8 @@ export declare type Diary = {
  * Timer function for logging
  */
 export declare type TimerFn = (start?: HighResTime) => HighResTime;
-export declare type RequestBodyWithElog<T> = Partial<RequestBodyObject> & {
-    parseInfo: (reqData: T) => {
+export declare type RequestBodyWithElog = Partial<RequestBodyObject> & {
+    parseInfo: <T>(reqData: T) => {
         [key: string]: string;
     };
 };

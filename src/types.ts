@@ -71,6 +71,6 @@ export type Diary = {
  */
 export type TimerFn = (start?: HighResTime) => HighResTime;
 
-export type RequestBodyWithElog<T> = Partial<RequestBodyObject> & {
-  parseInfo: (reqData: T) => {[key: string]: string}
+export type RequestBodyWithElog = Partial<RequestBodyObject> & {
+  parseInfo: <T>(reqData: T) => {[key: string]: string}
 }
