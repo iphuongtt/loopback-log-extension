@@ -12,17 +12,21 @@ export interface LogFn {
 /**
  * Log level metadata
  */
-export declare type LogMetadata = {
+export declare type LogMetadata<RQ, RP> = {
     fn: {
         code: string;
         name: string;
     };
     level?: number;
-    parseInfo?: Function;
-    parseResult: <T>(result: T) => {
+    parseInfo?: (request: RQ) => {
+        [key: string]: string;
+    };
+    parseResult: (result: RP) => {
         status: boolean;
         resultCode: string;
-        result: object;
+        result: {
+            [key: string]: string;
+        };
     };
     priorityLevel?: string;
     description: string;
@@ -36,7 +40,7 @@ export declare type HighResTime = [number, number];
  * Log writing function
  */
 export interface Logger {
-    log(logMetaData: LogMetadata, req: Request, reqData: any, result: any, status: boolean): void;
+    log(logMetaData: LogMetadata<object, object>, req: Request, reqData: any, result: any, status: boolean): void;
 }
 export declare type TokenRepository = DefaultCrudRepository<Token, typeof Token.prototype.id, TokenRelations>;
 export declare type ElogOptions = {
@@ -53,9 +57,8 @@ export declare type Diary = {
  * Timer function for logging
  */
 export declare type TimerFn = (start?: HighResTime) => HighResTime;
-export declare type RequestBodyWithElog = Partial<RequestBodyObject> & {
-    description?: string;
-    parseInfo: (reqData: any) => object;
-    required?: boolean;
-    content?: object;
+export declare type RequestBodyWithElog<T> = Partial<RequestBodyObject> & {
+    parseInfo: (reqData: T) => {
+        [key: string]: string;
+    };
 };

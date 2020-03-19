@@ -7,11 +7,11 @@ import { LogMetadata } from '../types';
  *
  * @param level - The Log Level at or above it should log
  */
-export declare function log(logMetaData: LogMetadata): MethodDecorator;
+export declare function log(logMetaData: LogMetadata<object, object>): MethodDecorator;
 /**
  * Fetch log level stored by `@log` decorator.
  *
  * @param controllerClass - Target controller
  * @param methodName - Target method
  */
-export declare function getLogMetadata(controllerClass: Constructor<{}>, methodName: string): LogMetadata;
+export declare function getLogMetadata(controllerClass: Constructor<{}>, methodName: string): LogMetadata<object, object>;

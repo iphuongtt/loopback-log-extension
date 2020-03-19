@@ -9,10 +9,10 @@ import {LogMetadata} from '../types';
  *
  * @param level - The Log Level at or above it should log
  */
-export function log(logMetaData: LogMetadata) {
+export function log(logMetaData: LogMetadata<object, object>) {
   let {level} = logMetaData
   if (level === undefined) level = LOG_LEVEL.WARN;
-  return MethodDecoratorFactory.createDecorator<LogMetadata>(
+  return MethodDecoratorFactory.createDecorator<LogMetadata<object, object>>(
     LOG_METADATA_KEY,
     {...logMetaData, level}
   );
@@ -27,12 +27,26 @@ export function log(logMetaData: LogMetadata) {
 export function getLogMetadata(
   controllerClass: Constructor<{}>,
   methodName: string,
-): LogMetadata {
+): LogMetadata<object, object> {
   return (
-    MetadataInspector.getMethodMetadata<LogMetadata>(
+    MetadataInspector.getMethodMetadata<LogMetadata<object, object>>(
       LOG_METADATA_KEY,
       controllerClass.prototype,
       methodName,
-    ) ?? {fn: {code: '', name: ''}, description: '', parseInfo: () => {}, parseResult: () => {return {status: true, resultCode: '', result: {}}}}
+    ) ?? {
+      fn: {
+        code: '',
+        name: ''
+      },
+      description: '',
+      parseInfo: () => {return {}},
+      parseResult: () => {
+        return {
+          result: {},
+          resultCode: '',
+          status: true
+        }
+      }
+    }
   );
 }
