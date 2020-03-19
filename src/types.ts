@@ -28,7 +28,7 @@ export type LogMetadata = {
   },
   level?: number,
   parseInfo?: Function,
-  parseResult: (result: any) => {
+  parseResult: <T>(result: T) => {
     status: boolean,
     resultCode: string,
     result: object
