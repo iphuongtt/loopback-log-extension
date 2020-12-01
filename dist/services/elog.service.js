@@ -229,6 +229,9 @@ class ElogService {
             data.isDone = this.isDone;
             this.isDone = "lock";
         }
+        else if (this.isDone === true) {
+            data.isDone = true;
+        }
         if (this.informations && this.informations.length > 0) {
             data.information = this.informations;
         }
