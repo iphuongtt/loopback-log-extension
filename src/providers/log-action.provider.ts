@@ -47,21 +47,25 @@ export class LogActionProvider implements Provider<LogFn> {
     status: boolean = true,
     start?: HighResTime,
   ): Promise<void> {
-    const controllerClass = await this.getController();
-    const methodName: string = await this.getMethod();
+    try {
+      const controllerClass = await this.getController();
+      const methodName: string = await this.getMethod();
 
-    const metadata: LogMetadata = getLogMetadata(controllerClass, methodName);
+      const metadata: LogMetadata = getLogMetadata(controllerClass, methodName);
 
-    const level: number | undefined = metadata ? metadata.level : undefined;
+      const level: number | undefined = metadata ? metadata.level : undefined;
 
-    if (
-      level !== undefined &&
-      this.logLevel !== LOG_LEVEL.OFF &&
-      level >= this.logLevel &&
-      level !== LOG_LEVEL.OFF
-    ) {
-      if (!args) args = [];
-      this.logger.log(metadata, req, args, result, status);
+      if (
+        level !== undefined &&
+        this.logLevel !== LOG_LEVEL.OFF &&
+        level >= this.logLevel &&
+        level !== LOG_LEVEL.OFF
+      ) {
+        if (!args) args = [];
+        this.logger.log(metadata, req, args, result, status);
+      }
+    } catch (error) {
+      ;
     }
   }
 }
