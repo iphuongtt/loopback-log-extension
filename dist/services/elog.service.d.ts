@@ -80,5 +80,9 @@ export declare class ElogService implements Logger {
     getToken(): Promise<string | false>;
     clearToken(): Promise<void>;
     pushNewTimeLine(content: string, status?: boolean): Promise<void>;
+    getIsDone(): string | boolean;
+    getStatus(): boolean | null;
+    getResultCode(): string;
+    getLogId(): string;
 }
 export {};

@@ -344,6 +344,18 @@ class ElogService {
             await this.post(timeLineData, `/diaries/${this.logId}/timelines`);
         }
     }
+    getIsDone() {
+        return this.isDone;
+    }
+    getStatus() {
+        return this.status;
+    }
+    getResultCode() {
+        return this.resultCode;
+    }
+    getLogId() {
+        return this.logId;
+    }
 }
 exports.ElogService = ElogService;
 //# sourceMappingURL=elog.service.js.map
