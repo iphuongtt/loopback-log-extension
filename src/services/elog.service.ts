@@ -395,4 +395,20 @@ export class ElogService implements Logger {
       await this.post(timeLineData, `/diaries/${this.logId}/timelines`)
     }
   }
+
+  getIsDone() {
+    return this.isDone;
+  }
+
+  getStatus() {
+    return this.status;
+  }
+
+  getResultCode() {
+    return this.resultCode;
+  }
+
+  getLogId() {
+    return this.logId;
+  }
 }
