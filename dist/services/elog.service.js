@@ -38,7 +38,7 @@ class ElogService {
             const token = await this.tokenRepo.findOne({ where: { username: this.username } });
             if (token) {
                 token.token = this.token;
-                this.tokenRepo.save(token);
+                this.tokenRepo.save(token).then(() => { }, e => console.log(e));
             }
             else {
                 await this.tokenRepo.create({
@@ -55,10 +55,12 @@ class ElogService {
         if (status === false) {
             this.setStatus(status);
             if (typeof result === 'object') {
-                this.addTimeLine('result', false, 'result.json', Buffer.from(JSON.stringify(result), 'utf8').toString('base64'));
+                const _jsonStr = JSON.stringify(result);
+                const _content = _jsonStr.substring(0, 1000);
+                this.addTimeLine(_content, false);
             }
             else {
-                this.addTimeLine('result', false, 'result.txt', Buffer.from(result, 'utf8').toString('base64'));
+                this.addTimeLine(result.substring(0, 1000), false);
             }
         }
         const { parseInfo, parseResult, fn, priorityLevel, description } = metaData;
@@ -85,7 +87,9 @@ class ElogService {
             else {
                 this.setStatus(status);
             }
-            this.addTimeLine('result', resutlStatus, 'result.json', Buffer.from(JSON.stringify(resResult), 'utf8').toString('base64'));
+            const _jsonStr = JSON.stringify(resResult);
+            const _content = _jsonStr.substring(0, 1000);
+            this.addTimeLine(_content, resutlStatus);
         }
         if (priorityLevel) {
             this.setType(priorityLevel);
@@ -94,7 +98,7 @@ class ElogService {
         this.setFunction(fn.code, fn.name);
         this.setIpServer(ip_1.default.address());
         this.setIpClient(request.ip === '::1' ? '127.0.0.1' : request.ip);
-        this.createLog();
+        this.createLog().then(() => { }, e => console.log(e));
     }
     setChange(change = true) {
         this.hasChange = change;
@@ -178,7 +182,7 @@ class ElogService {
         catch (error) {
             if (error.response.status === 401) {
                 await this.clearToken();
-                return this.post(data, apiName);
+                return await this.post(data, apiName);
             }
             return false;
         }
@@ -200,7 +204,7 @@ class ElogService {
         catch (error) {
             if (error.response.status === 401) {
                 await this.clearToken();
-                return this.patch(data, apiName);
+                return await this.patch(data, apiName);
             }
             return false;
         }
@@ -249,7 +253,7 @@ class ElogService {
             const result = await this.post(data, '/diaries');
             if (result) {
                 this.logId = result.id;
-                this.pushTimeLine();
+                this.pushTimeLine().then(() => { }, e => console.log(e));
                 this.setChange(false);
             }
         }
@@ -257,7 +261,7 @@ class ElogService {
     }
     async pushTimeLine() {
         var _a;
-        let timeLineData = {};
+        const timeLineData = {};
         if (this.logId && this.timelines && this.timelines.length > 0) {
             for (let i = 0; i < this.timelines.length; i++) {
                 if (!this.timelines[i].isSend) {
@@ -303,16 +307,17 @@ class ElogService {
         }
     }
     async getToken() {
+        var _a, _b;
         if (!this.token) {
-            let token = await this.tokenRepo.findOne({ where: { username: this.username } });
-            let tokenKey = token ? token.token || '' : '';
+            const token = await this.tokenRepo.findOne({ where: { username: this.username } });
+            const tokenKey = token ? (_a = token.token) !== null && _a !== void 0 ? _a : '' : '';
             if (!tokenKey) {
                 await this.login();
-                let token = await this.tokenRepo.findOne({ where: { username: this.username } });
+                const token = await this.tokenRepo.findOne({ where: { username: this.username } });
                 if (!token) {
                     return false;
                 }
-                this.token = token.token || '';
+                this.token = (_b = token.token) !== null && _b !== void 0 ? _b : '';
                 return this.token;
             }
             this.token = tokenKey;
