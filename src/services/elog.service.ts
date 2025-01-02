@@ -43,21 +43,21 @@ export class ElogService implements Logger {
   protected password: string
   protected appcode: string
 
-  private logId: string = '';
-  private token: string = '';
-  private type: string = 'THUONG';
-  private description: string = '';
+  private logId = '';
+  private token = '';
+  private type = 'THUONG';
+  private description = '';
   private informations: Infomation[] = [];
   private status: boolean | null = null;
   private timelines: TimeLine[] = [];
-  private resultCode: string = '';
-  private ipServer: string = '';
-  private ipClient: string = '';
+  private resultCode = '';
+  private ipServer = '';
+  private ipClient = '';
   private isDone: string | boolean = false;
-  private functionCode: string = '';
-  private functionName: string = '';
-  private hasChange: boolean = false;
-  private timeLineOrder: number = 0;
+  private functionCode = '';
+  private functionName = '';
+  private hasChange = false;
+  private timeLineOrder = 0;
 
   constructor(options: ElogOptions, private tokenRepo: TokenRepository) {
     this.url = options.url
@@ -78,7 +78,7 @@ export class ElogService implements Logger {
       const token = await this.tokenRepo.findOne({where: {username: this.username}})
       if (token) {
         token.token = this.token
-        this.tokenRepo.save(token)
+        this.tokenRepo.save(token).then(() => { }, e => console.log(e));
       } else {
         await this.tokenRepo.create({
           username: this.username,
@@ -94,9 +94,11 @@ export class ElogService implements Logger {
     if (status === false) {
       this.setStatus(status)
       if (typeof result === 'object') {
-        this.addTimeLine('result', false, 'result.json', Buffer.from(JSON.stringify(result), 'utf8').toString('base64'))
+        const _jsonStr = JSON.stringify(result);
+        const _content = _jsonStr.substring(0, 1000);
+        this.addTimeLine(_content, false);
       } else {
-        this.addTimeLine('result', false, 'result.txt', Buffer.from(result, 'utf8').toString('base64'))
+        this.addTimeLine(result.substring(0, 1000), false);
       }
     }
     const {parseInfo, parseResult, fn, priorityLevel, description} = metaData
@@ -123,7 +125,9 @@ export class ElogService implements Logger {
       } else {
         this.setStatus(status)
       }
-      this.addTimeLine('result', resutlStatus, 'result.json', Buffer.from(JSON.stringify(resResult), 'utf8').toString('base64'))
+      const _jsonStr = JSON.stringify(resResult);
+      const _content = _jsonStr.substring(0, 1000);
+      this.addTimeLine(_content, resutlStatus)
     }
 
     if (priorityLevel) {
@@ -133,7 +137,7 @@ export class ElogService implements Logger {
     this.setFunction(fn.code, fn.name)
     this.setIpServer(ip.address())
     this.setIpClient(request.ip === '::1' ? '127.0.0.1' : request.ip)
-    this.createLog()
+    this.createLog().then(() => { }, e => console.log(e));
   }
 
   setChange(change = true) {
@@ -196,7 +200,7 @@ export class ElogService implements Logger {
     this.setChange();
   }
 
-  addTimeLine(content: string, status: boolean = true, fileName: string = '', base64FileContent: string = '') {
+  addTimeLine(content: string, status = true, fileName = '', base64FileContent = '') {
     this.timeLineOrder++;
     const timeLineData: TimeLine = {
       isSend: false,
@@ -227,7 +231,7 @@ export class ElogService implements Logger {
     } catch (error) {
       if (error.response.status === 401) {
         await this.clearToken();
-        return this.post(data, apiName);
+        return await this.post(data, apiName);
       }
       return false;
     }
@@ -248,7 +252,7 @@ export class ElogService implements Logger {
     } catch (error) {
       if (error.response.status === 401) {
         await this.clearToken();
-        return this.patch(data, apiName);
+        return await this.patch(data, apiName);
       }
       return false;
     }
@@ -298,7 +302,7 @@ export class ElogService implements Logger {
       const result = await this.post(data, '/diaries')
       if (result) {
         this.logId = result.id
-        this.pushTimeLine()
+        this.pushTimeLine().then(() => { }, e => console.log(e));
         this.setChange(false)
       }
     }
@@ -306,7 +310,7 @@ export class ElogService implements Logger {
   }
 
   async pushTimeLine() {
-    let timeLineData: TimeLine = {}
+    const timeLineData: TimeLine = {}
     if (this.logId && this.timelines && this.timelines.length > 0) {
       for (let i = 0; i < this.timelines.length; i++) {
         if (!this.timelines[i].isSend) {
@@ -355,15 +359,15 @@ export class ElogService implements Logger {
 
   async getToken() {
     if (!this.token) {
-      let token = await this.tokenRepo.findOne({where: {username: this.username}})
-      let tokenKey: string = token ? token.token || '' : ''
+      const token = await this.tokenRepo.findOne({where: {username: this.username}})
+      const tokenKey: string = token ? token.token ?? '' : ''
       if (!tokenKey) {
         await this.login()
-        let token = await this.tokenRepo.findOne({where: {username: this.username}})
+        const token = await this.tokenRepo.findOne({where: {username: this.username}})
         if (!token) {
           return false
         }
-        this.token = token.token || ''
+        this.token = token.token ?? ''
         return this.token
       }
       this.token = tokenKey
