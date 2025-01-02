@@ -79,5 +79,6 @@ export declare class ElogService implements Logger {
     push(): void;
     getToken(): Promise<string | false>;
     clearToken(): Promise<void>;
+    pushNewTimeLine(content: string, status?: boolean): Promise<void>;
 }
 export {};

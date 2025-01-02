@@ -331,6 +331,19 @@ class ElogService {
         await this.tokenRepo.deleteAll({ username: this.username });
         this.token = '';
     }
+    async pushNewTimeLine(content, status = true) {
+        this.timeLineOrder++;
+        const timeLineData = {
+            status,
+            order: this.timeLineOrder,
+        };
+        if (content) {
+            timeLineData.content = content;
+        }
+        if (this.logId) {
+            await this.post(timeLineData, `/diaries/${this.logId}/timelines`);
+        }
+    }
 }
 exports.ElogService = ElogService;
 //# sourceMappingURL=elog.service.js.map
