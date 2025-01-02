@@ -381,6 +381,18 @@ export class ElogService implements Logger {
     await this.tokenRepo.deleteAll({username: this.username})
     this.token = ''
   }
+
+  async pushNewTimeLine(content: string, status = true) {
+    this.timeLineOrder++;
+    const timeLineData: TimeLine = {
+      status,
+      order: this.timeLineOrder,
+    }
+    if (content) {
+      timeLineData.content = content
+    }
+    if (this.logId) {
+      await this.post(timeLineData, `/diaries/${this.logId}/timelines`)
+    }
+  }
 }
-
-
