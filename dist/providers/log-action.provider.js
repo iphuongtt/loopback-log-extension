@@ -26,17 +26,22 @@ let LogActionProvider = class LogActionProvider {
     async action(req, args, 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     result, status = true, start) {
-        const controllerClass = await this.getController();
-        const methodName = await this.getMethod();
-        const metadata = decorators_1.getLogMetadata(controllerClass, methodName);
-        const level = metadata ? metadata.level : undefined;
-        if (level !== undefined &&
-            this.logLevel !== keys_1.LOG_LEVEL.OFF &&
-            level >= this.logLevel &&
-            level !== keys_1.LOG_LEVEL.OFF) {
-            if (!args)
-                args = [];
-            this.logger.log(metadata, req, args, result, status);
+        try {
+            const controllerClass = await this.getController();
+            const methodName = await this.getMethod();
+            const metadata = decorators_1.getLogMetadata(controllerClass, methodName);
+            const level = metadata ? metadata.level : undefined;
+            if (level !== undefined &&
+                this.logLevel !== keys_1.LOG_LEVEL.OFF &&
+                level >= this.logLevel &&
+                level !== keys_1.LOG_LEVEL.OFF) {
+                if (!args)
+                    args = [];
+                this.logger.log(metadata, req, args, result, status);
+            }
+        }
+        catch (error) {
+            ;
         }
     }
 };

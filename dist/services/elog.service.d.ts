@@ -62,8 +62,8 @@ export declare class ElogService implements Logger {
     setStatus(status: boolean): void;
     setType(type: string): void;
     setDescription(description: string): void;
-    setIpServer(ip: string): void;
-    setIpClient(ip: string): void;
+    setIpServer(_ip: string): void;
+    setIpClient(_ip: string): void;
     addDescription(str: string): void;
     addObjectInfo(key: string, value: string): void;
     addTimeLine(content: string, status?: boolean, fileName?: string, base64FileContent?: string): void;
@@ -79,5 +79,10 @@ export declare class ElogService implements Logger {
     push(): void;
     getToken(): Promise<string | false>;
     clearToken(): Promise<void>;
+    pushNewTimeLine(content: string, status?: boolean): Promise<void>;
+    getIsDone(): string | boolean;
+    getStatus(): boolean | null;
+    getResultCode(): string;
+    getLogId(): string;
 }
 export {};
