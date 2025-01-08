@@ -138,7 +138,8 @@ export class ElogService implements Logger {
     this.setIpServer(ip.address())
     let ipClient = '';
     if (request.headers['x-forwarded-for'] && request.headers['x-forwarded-for'] !== '') {
-      ipClient = request.headers['x-forwarded-for'].toString();
+      const ips = request.headers['x-forwarded-for'].toString().split(',');
+      ipClient = ips[0];
     }
     if (ipClient === "" && (request.ip === '::1' || request.ip === '::ffff:' || request.ip === '::ffff:127.0.0.1')) {
       ipClient = '127.0.0.1'
