@@ -97,7 +97,17 @@ class ElogService {
         this.setDone();
         this.setFunction(fn.code, fn.name);
         this.setIpServer(ip_1.default.address());
-        this.setIpClient(request.ip === '::1' ? '127.0.0.1' : request.ip);
+        let ipClient = '';
+        if (request.headers['x-forwarded-for'] && request.headers['x-forwarded-for'] !== '') {
+            ipClient = request.headers['x-forwarded-for'].toString();
+        }
+        if (ipClient === "" && (request.ip === '::1' || request.ip === '::ffff:' || request.ip === '::ffff:127.0.0.1')) {
+            ipClient = '127.0.0.1';
+        }
+        if (ipClient === "" && !(request.ip === '::1' || request.ip === '::ffff:' || request.ip === '::ffff:127.0.0.1')) {
+            ipClient = request.ip.toString();
+        }
+        this.setIpClient(ipClient);
         this.createLog().then(() => { }, e => console.log(e));
     }
     setChange(change = true) {
@@ -130,12 +140,12 @@ class ElogService {
         this.description = description;
         this.setChange();
     }
-    setIpServer(ip) {
-        this.ipServer = ip;
+    setIpServer(_ip) {
+        this.ipServer = _ip;
         this.setChange();
     }
-    setIpClient(ip) {
-        this.ipClient = ip;
+    setIpClient(_ip) {
+        this.ipClient = _ip;
         this.setChange();
     }
     addDescription(str) {
