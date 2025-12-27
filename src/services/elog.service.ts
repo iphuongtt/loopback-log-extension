@@ -145,7 +145,7 @@ export class ElogService implements Logger {
       ipClient = '127.0.0.1'
     }
     if (ipClient === "" && !(request.ip === '::1' || request.ip === '::ffff:' || request.ip === '::ffff:127.0.0.1')) {
-      ipClient = request.ip.toString();
+      ipClient = request.ip?.toString() || '';
     }
     this.setIpClient(ipClient)
     this.createLog().then(() => { }, e => console.log(e));
