@@ -1,6 +1,6 @@
-import { Component, ProviderMap, Binding, config, BindingScope } from '@loopback/core';
-import { LOG_BINDINGS } from './keys';
-import { LogActionProvider, TimerProvider, ElogProvider } from './providers';
+import {Binding, BindingScope, Component, config, ProviderMap} from '@loopback/core';
+import {LOG_BINDINGS} from './keys';
+import {ElogProvider, LogActionProvider, TimerProvider} from './providers';
 
 export type LoggingComponentConfig = {
   enableElog?: boolean;
@@ -27,7 +27,7 @@ export class LogComponent implements Component {
       this.bindings = [
         Binding.bind(LOG_BINDINGS.LOGGER)
           .toProvider(ElogProvider)
-          .inScope(BindingScope.CONTEXT)
+          .inScope(BindingScope.APPLICATION)
       ];
     }
   }

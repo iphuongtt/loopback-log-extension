@@ -19,7 +19,7 @@ let LogComponent = class LogComponent {
             this.bindings = [
                 core_1.Binding.bind(keys_1.LOG_BINDINGS.LOGGER)
                     .toProvider(providers_1.ElogProvider)
-                    .inScope(core_1.BindingScope.CONTEXT)
+                    .inScope(core_1.BindingScope.APPLICATION)
             ];
         }
     }
