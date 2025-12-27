@@ -1,5 +1,5 @@
 import { Component, ProviderMap, Binding } from '@loopback/core';
-export declare type LoggingComponentConfig = {
+export type LoggingComponentConfig = {
     enableElog?: boolean;
 };
 export declare class LogComponent implements Component {

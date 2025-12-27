@@ -1,5 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.log = log;
+exports.getLogMetadata = getLogMetadata;
 const context_1 = require("@loopback/context");
 const keys_1 = require("../keys");
 /**
@@ -13,9 +15,8 @@ function log(logMetaData) {
     let { level } = logMetaData;
     if (level === undefined)
         level = keys_1.LOG_LEVEL.WARN;
-    return context_1.MethodDecoratorFactory.createDecorator(keys_1.LOG_METADATA_KEY, Object.assign(Object.assign({}, logMetaData), { level }));
+    return context_1.MethodDecoratorFactory.createDecorator(keys_1.LOG_METADATA_KEY, { ...logMetaData, level });
 }
-exports.log = log;
 /**
  * Fetch log level stored by `@log` decorator.
  *
@@ -40,5 +41,4 @@ function getLogMetadata(controllerClass, methodName) {
         }
     });
 }
-exports.getLogMetadata = getLogMetadata;
 //# sourceMappingURL=log.decorator.js.map

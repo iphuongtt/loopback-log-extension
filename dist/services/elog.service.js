@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.ElogService = void 0;
 const tslib_1 = require("tslib");
 const axios_1 = tslib_1.__importDefault(require("axios"));
 const ip_1 = tslib_1.__importDefault(require("ip"));
@@ -52,6 +53,7 @@ class ElogService {
         }
     }
     async log(metaData, request, reqData, result, status) {
+        var _a;
         if (status === false) {
             this.setStatus(status);
             if (typeof result === 'object') {
@@ -106,7 +108,7 @@ class ElogService {
             ipClient = '127.0.0.1';
         }
         if (ipClient === "" && !(request.ip === '::1' || request.ip === '::ffff:' || request.ip === '::ffff:127.0.0.1')) {
-            ipClient = request.ip.toString();
+            ipClient = ((_a = request.ip) === null || _a === void 0 ? void 0 : _a.toString()) || '';
         }
         this.setIpClient(ipClient);
         this.createLog().then(() => { }, e => console.log(e));

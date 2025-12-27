@@ -7,4 +7,4 @@ export declare class Token extends Entity {
 }
 export interface TokenRelations {
 }
-export declare type TokenWithRelations = Token & TokenRelations;
+export type TokenWithRelations = Token & TokenRelations;

@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.LogMixin = LogMixin;
 const component_1 = require("../component");
 const keys_1 = require("../keys");
 /**
@@ -39,5 +40,4 @@ function LogMixin(superClass) {
         }
     };
 }
-exports.LogMixin = LogMixin;
 //# sourceMappingURL=log.mixin.js.map

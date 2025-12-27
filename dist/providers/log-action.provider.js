@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.LogActionProvider = void 0;
 const tslib_1 = require("tslib");
 const context_1 = require("@loopback/context");
 const core_1 = require("@loopback/core");
@@ -29,7 +30,7 @@ let LogActionProvider = class LogActionProvider {
         try {
             const controllerClass = await this.getController();
             const methodName = await this.getMethod();
-            const metadata = decorators_1.getLogMetadata(controllerClass, methodName);
+            const metadata = (0, decorators_1.getLogMetadata)(controllerClass, methodName);
             const level = metadata ? metadata.level : undefined;
             if (level !== undefined &&
                 this.logLevel !== keys_1.LOG_LEVEL.OFF &&
@@ -45,19 +46,19 @@ let LogActionProvider = class LogActionProvider {
         }
     }
 };
+exports.LogActionProvider = LogActionProvider;
 tslib_1.__decorate([
-    context_1.inject(keys_1.LOG_BINDINGS.LOGGER, { optional: true }),
+    (0, context_1.inject)(keys_1.LOG_BINDINGS.LOGGER, { optional: true }),
     tslib_1.__metadata("design:type", Object)
 ], LogActionProvider.prototype, "logger", void 0);
 tslib_1.__decorate([
-    context_1.inject(keys_1.LOG_BINDINGS.APP_LOG_LEVEL, { optional: true }),
+    (0, context_1.inject)(keys_1.LOG_BINDINGS.APP_LOG_LEVEL, { optional: true }),
     tslib_1.__metadata("design:type", Number)
 ], LogActionProvider.prototype, "logLevel", void 0);
-LogActionProvider = tslib_1.__decorate([
+exports.LogActionProvider = LogActionProvider = tslib_1.__decorate([
     tslib_1.__param(0, context_1.inject.getter(core_1.CoreBindings.CONTROLLER_CLASS)),
     tslib_1.__param(1, context_1.inject.getter(core_1.CoreBindings.CONTROLLER_METHOD_NAME)),
-    tslib_1.__param(2, context_1.inject(keys_1.LOG_BINDINGS.TIMER)),
+    tslib_1.__param(2, (0, context_1.inject)(keys_1.LOG_BINDINGS.TIMER)),
     tslib_1.__metadata("design:paramtypes", [Function, Function, Function])
 ], LogActionProvider);
-exports.LogActionProvider = LogActionProvider;
 //# sourceMappingURL=log-action.provider.js.map

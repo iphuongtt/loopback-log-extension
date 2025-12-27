@@ -1,4 +1,3 @@
-/// <reference types="express" />
 import { Class, DefaultCrudRepository } from '@loopback/repository';
 import { Request, RequestBodyObject } from '@loopback/rest';
 import { Token, TokenRelations } from './models';
@@ -12,7 +11,7 @@ export interface LogFn {
 /**
  * Log level metadata
  */
-export declare type LogMetadata = {
+export type LogMetadata = {
     fn: {
         code: string;
         name: string;
@@ -35,29 +34,29 @@ export declare type LogMetadata = {
 /**
  * High resolution time as [seconds, nanoseconds]. Used by process.hrtime().
  */
-export declare type HighResTime = [number, number];
+export type HighResTime = [number, number];
 /**
  * Log writing function
  */
 export interface Logger {
     log(logMetaData: LogMetadata, req: Request, reqData: any, result: any, status: boolean): void;
 }
-export declare type TokenRepository = DefaultCrudRepository<Token, typeof Token.prototype.id, TokenRelations>;
-export declare type ElogOptions = {
+export type TokenRepository = DefaultCrudRepository<Token, typeof Token.prototype.id, TokenRelations>;
+export type ElogOptions = {
     url: string;
     username: string;
     password: string;
     appCode: string;
     tokenRepo: Class<TokenRepository>;
 };
-export declare type Diary = {
+export type Diary = {
     id?: string;
 };
 /**
  * Timer function for logging
  */
-export declare type TimerFn = (start?: HighResTime) => HighResTime;
-export declare type RequestBodyWithElog = Partial<RequestBodyObject> & {
+export type TimerFn = (start?: HighResTime) => HighResTime;
+export type RequestBodyWithElog = Partial<RequestBodyObject> & {
     parseInfo: (reqData: any) => {
         [key: string]: string;
     };

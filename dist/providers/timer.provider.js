@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.TimerProvider = void 0;
 class TimerProvider {
     constructor() { }
     value() {

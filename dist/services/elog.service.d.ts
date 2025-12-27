@@ -1,11 +1,10 @@
-/// <reference types="express" />
 import { Request } from '@loopback/rest';
 import { ElogOptions, Logger, LogMetadata, TokenRepository } from '../types';
-declare type Infomation = {
+type Infomation = {
     key: string;
     value: string;
 };
-declare type TimeLine = {
+type TimeLine = {
     isSend?: boolean;
     timestamp?: Date;
     order?: number;
@@ -16,7 +15,7 @@ declare type TimeLine = {
         base64: string;
     };
 };
-declare type Diary = {
+type Diary = {
     ipServer?: string;
     ipClient?: string;
     type?: string;
