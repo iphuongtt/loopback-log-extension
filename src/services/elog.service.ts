@@ -479,7 +479,7 @@ export class ElogService implements Logger {
 
     // Trường hợp cực hiếm vẫn vượt → trả về mảng rỗng hoặc thông báo ngắn
     if (json.length > ElogService.MAX_LENGTH) {
-      return JSON.stringify([{key: 'log_truncated', value: 'too_long'}]);
+      return [{key: 'log_truncated', value: 'too_long'}];
     }
     return JSON.parse(json);
   }

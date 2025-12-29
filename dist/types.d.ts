@@ -28,6 +28,7 @@ export type LogMetadata = {
         };
     };
     priorityLevel?: string;
+    importantKeys?: string[];
     description: string;
     tags?: string[];
 };

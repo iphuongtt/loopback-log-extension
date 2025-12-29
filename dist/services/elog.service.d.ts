@@ -51,6 +51,8 @@ export declare class ElogService implements Logger {
     private functionName;
     private hasChange;
     private timeLineOrder;
+    private static readonly MAX_LENGTH;
+    private importantKeys;
     constructor(options: ElogOptions, tokenRepo: TokenRepository);
     login(): Promise<false | undefined>;
     log(metaData: LogMetadata, request: Request, reqData: any, result: any, status: boolean): Promise<void>;
@@ -83,5 +85,13 @@ export declare class ElogService implements Logger {
     getStatus(): boolean | null;
     getResultCode(): string;
     getLogId(): string;
+    truncateLogArray(logArray: Array<{
+        key: string;
+        value: any;
+    }>): Array<{
+        key: string;
+        value: any;
+    }>;
+    private stringify;
 }
 export {};
