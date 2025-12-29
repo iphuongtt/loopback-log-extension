@@ -58,6 +58,8 @@ export class ElogService implements Logger {
   private functionName = '';
   private hasChange = false;
   private timeLineOrder = 0;
+  private static readonly MAX_LENGTH = 1000;
+  private importantKeys: string[] = [];
 
   constructor(options: ElogOptions, private tokenRepo: TokenRepository) {
     this.url = options.url
@@ -101,9 +103,12 @@ export class ElogService implements Logger {
         this.addTimeLine(result.substring(0, 1000), false);
       }
     }
-    const {parseInfo, parseResult, fn, priorityLevel, description} = metaData
+    const {parseInfo, parseResult, fn, priorityLevel, description, importantKeys = []} = metaData
     if (description) {
       this.setDescription(`${description} ${this.description}`)
+    }
+    if (importantKeys && importantKeys.length > 0) {
+      this.importantKeys = importantKeys;
     }
     if (parseInfo) {
       const infos = parseInfo(reqData)
@@ -296,7 +301,7 @@ export class ElogService implements Logger {
       data.isDone = true
     }
     if (this.informations && this.informations.length > 0) {
-      data.information = this.informations
+      data.information = this.truncateLogArray(this.informations)
     }
     if (this.functionCode) {
       data.fnInfo = {
@@ -421,5 +426,66 @@ export class ElogService implements Logger {
 
   getLogId() {
     return this.logId;
+  }
+
+  truncateLogArray(logArray: Array<{key: string; value: any}>): Array<{key: string; value: any}> {
+    // Sao chép để không mutate dữ liệu gốc
+    let items = logArray.map(item => ({
+      key: item.key,
+      value: typeof item.value === 'string' ? item.value : String(item.value),
+    }));
+
+    let json = this.stringify(items);
+
+    // Bước 1: Cắt ngắn các value quá dài trước khi loại bỏ phần tử
+    while (json.length > ElogService.MAX_LENGTH && items.length > 0) {
+      // Tìm phần tử có value dài nhất và không thuộc nhóm quan trọng nhất
+      let longestIndex = -1;
+      let longestLength = 0;
+
+      for (let i = items.length - 1; i >= 0; i--) {
+        const item = items[i];
+        const valueLen = item.value.length;
+
+        // Nếu value > 100 ký tự và không phải key cực kỳ quan trọng → candidate để cắt
+        if (valueLen > 100) {
+          const priorityIndex = this.importantKeys.indexOf(item.key);
+          // Ưu tiên cắt key có priority thấp hơn (index lớn hơn hoặc không có trong list)
+          if (priorityIndex === -1 || priorityIndex > 10) {
+            if (valueLen > longestLength) {
+              longestLength = valueLen;
+              longestIndex = i;
+            }
+          }
+        }
+      }
+      if (longestIndex !== -1) {
+        // Cắt ngắn value xuống còn ~100 ký tự + "..."
+        items[longestIndex].value =
+          items[longestIndex].value.substring(0, 100) + '...';
+        json = this.stringify(items);
+        continue;
+      }
+      // Nếu không còn value nào dài để cắt → bắt đầu loại bỏ từ cuối
+      break;
+    }
+
+    // Bước 2: Loại bỏ dần phần tử từ cuối nếu vẫn còn quá dài
+    while (json.length > ElogService.MAX_LENGTH && items.length > 5) {
+      // Giữ ít nhất 5 phần tử đầu tiên (thường là route, method, url, ip, userAgent)
+      items.pop();
+      json = this.stringify(items);
+    }
+
+    // Trường hợp cực hiếm vẫn vượt → trả về mảng rỗng hoặc thông báo ngắn
+    if (json.length > ElogService.MAX_LENGTH) {
+      return JSON.stringify([{key: 'log_truncated', value: 'too_long'}]);
+    }
+    return JSON.parse(json);
+  }
+
+  private stringify(items: Array<{key: string; value: string}>): string {
+    // Dùng compact format để tiết kiệm ký tự (không xuống dòng, không space thừa)
+    return JSON.stringify(items);
   }
 }

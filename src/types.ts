@@ -34,6 +34,7 @@ export type LogMetadata = {
     result: {[key: string]: string}
   },
   priorityLevel?: string,
+  importantKeys?: string[],
   description: string
   tags?: string[]
 };
