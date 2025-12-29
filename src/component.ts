@@ -27,7 +27,7 @@ export class LogComponent implements Component {
       this.bindings = [
         Binding.bind(LOG_BINDINGS.LOGGER)
           .toProvider(ElogProvider)
-          .inScope(BindingScope.APPLICATION)
+          .inScope(BindingScope.REQUEST)
       ];
     }
   }
